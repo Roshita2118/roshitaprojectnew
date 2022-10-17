@@ -8,7 +8,12 @@ from django import forms
 from django.shortcuts import render
 from .forms import GeeksForm
 from django.contrib import admin
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from .models import GeeksModel
+
+
 def index(request):
    return HttpResponse("Hello Geeks")
 
@@ -67,12 +72,10 @@ def create_view(request):
     # dictionary for initial data with
     # field names as keys
     context = {}
-
     # add the dictionary during initialization
     form = GeeksForm(request.POST or None)
     if form.is_valid():
         form.save()
-
     context['form'] = form
     return render(request, "create_view.html", context)
 
@@ -158,14 +161,64 @@ class MyView(View):
         # <view logic>
         return HttpResponse('result')
 
-
-from django.views.generic.edit import CreateView
 from .models import GeeksModel
+from django.shortcuts import render
 
+
+# Create your views here.
 class GeeksCreate(CreateView):
-    # specify the model for create view
+    model = GeeksModel
+    fields = ['title', 'description']
+
+
+class GeeksList(ListView):
+    # specify the model for list view
     model = GeeksModel
 
-    # specify the fields to be displayed
 
-    fields = ['title', 'description']
+class GeeksDetailView(DetailView):
+    # specify the model to use
+    model = GeeksModel
+
+
+class GeeksUpdateView(UpdateView):
+    # specify the model you want to use
+    model = GeeksModel
+
+    # specify the fields
+    fields = [
+        "title",
+        "description"
+    ]
+
+    # can specify success url
+    # url to redirect after successfully
+    # updating details
+    success_url = "/"
+
+class GeeksDeleteView(DeleteView):
+        # specify the model you want to use
+        model = GeeksModel
+
+        # can specify success url
+        # url to redirect after successfully
+        # deleting object
+        success_url = "/"
+
+
+# import generic FormView
+from django.views.generic.edit import FormView
+
+# Relative import of GeeksForm
+from .forms import GeeksForm
+class GeeksFormView(FormView):
+    # specify the Form you want to use
+    form_class = GeeksForm
+
+    # specify name of template
+    template_name = "roshitaappnew/geeksmodel_form.html"
+
+    # can specify success url
+    # url to redirect after successfully
+    # updating details
+    success_url = "/thanks/"

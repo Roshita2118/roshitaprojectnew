@@ -2,7 +2,7 @@ from django import forms
 from .models import GeeksModel
 
 
-# creating a form
+# creating a formx
 class GeeksForm(forms.ModelForm):
     # create meta class
     class Meta:
